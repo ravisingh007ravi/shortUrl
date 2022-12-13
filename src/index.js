@@ -1,19 +1,18 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const route = require('./router/route')
+const route = require('./router/routes.js')
+mongoose.set('strictQuery', false);
 const app = express();
 
 app.use(express.json());
-const DB="mongodb+srv://Jyoticoder:Jyoti2025@jyoticoder-cluster.ljxxb2x.mongodb.net/coder"
+const DB="mongodb+srv://ravisingh007ravi:Ravi1234@cluster0.w9hbwbb.mongodb.net/shortURL?retryWrites=true&w=majority"
 
 mongoose.connect(DB, {useNewUrlParser : true})
-.then(()=>{ console.log("MongoDb connected😎😎")})
+.then(()=>{ console.log("MongoDb connected 😎😎")})
 .catch(err=>{ console.log(err)});
-
-mongoose.set('strictQuery', true);
 
 app.use("/",route)
 
 app.listen(process.env.PORT || 3000, ()=>{
-    console.log('running on port'+ (process.env.PORT || 3000))
+    console.log('Running on port '+ (process.env.PORT || 3000))
 });
