@@ -72,3 +72,5 @@ Url shorten response
     "urlCode": "ghfgfg"
   } 
 }
+
+redis-cli -u redis://default:PPxOPY5CbByIJjVVFyqCc75QTP05tsDq@redis-17109.c301.ap-south-1-1.ec2.cloud.redislabs.com:17109
