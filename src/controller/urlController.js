@@ -18,7 +18,7 @@ redisClient.on("connect", async () => {
   console.log("Connected to Redis..");
 });
 
-const SET_ASYNC = promisify(redisClient.SET).bind(redisClient);
+const SET_ASYNC = promisify(redisClient.SETEX).bind(redisClient);
 const GET_ASYNC = promisify(redisClient.GET).bind(redisClient);
 
 
@@ -29,16 +29,16 @@ const shortUrl = async (req, res) => {
   try {
     const longUrl = req.body.longUrl
     const data = req.body
-
+    longUrl.trim()
     if (!longUrl) return res.status(400).send({ status: false, message: "longUrl must be present" })
 
     if (!(Validations.isValidString(longUrl))) return res.status(400).send({ status: false, message: "Pls provide a URL" })
     
-    let cahcedProfileData = await GET_ASYNC(longUrl.trim())
+    let cahcedProfileData = await GET_ASYNC(longUrl)
 
     let data1 = JSON.parse(cahcedProfileData)
 
-    if (data1 != null) return res.status(200).send({ status: true, message: "url is already shorted", data: data1 })
+    if (data1) return res.status(200).send({ status: true, message: "url is already shorted", data: data1 })
     
     else {
 
@@ -50,7 +50,7 @@ const shortUrl = async (req, res) => {
         if (result.status == 201 || result.status == 200)
           urlfound = true;
       })
-      .catch((err) => { });
+      .catch((err) => {console.log(err) });
 
     if (urlfound == false) return res.status(400).send({ msg: "URL is not correct" })
       
@@ -58,13 +58,13 @@ const shortUrl = async (req, res) => {
 
       let shortUrl = `http://localhost:3000/${urlCode}`
 
-      data["shortUrl"] = `http://localhost:3000/${urlCode}`
-      data["urlCode"] = urlCode
+      data.shortUrl = `http://localhost:3000/${urlCode}`
+      data.urlCode = urlCode
 
       const createURL = await urlModel.create(data);
 
       let profile = await urlModel.findOne({ longUrl: longUrl });
-      await SET_ASYNC(longUrl, JSON.stringify(profile))
+      await SET_ASYNC(longUrl,1440, JSON.stringify(profile))
 
       return res.status(201).send({ status: true, data: profile });
     }
@@ -80,10 +80,6 @@ const activeShorturl = async (req, res) => {
 
     let urlCode = req.params.urlCode
 
-    if (!Validations.isValidString(urlCode)) return res.status(400).send({ status: false, message: "provide a valid String" })
-
-    if (!(Validations.isValidURLCode(urlCode))) return res.status(400).send({ status: false, message: "urlcode is not valid" })
-    
     let cahcedProfileData = await GET_ASYNC(urlCode)
 
     if (cahcedProfileData != null) {
@@ -99,7 +95,7 @@ const activeShorturl = async (req, res) => {
         return res.status(404).send({ status: false, message: "urlcode is not registered" })
       }
       let longUrl = profile.longUrl
-      await SET_ASYNC(urlCode, JSON.stringify(profile))
+      await SET_ASYNC(urlCode,1440, JSON.stringify(profile))
 
       return res.status(302).redirect(longUrl)
 

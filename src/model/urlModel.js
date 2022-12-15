@@ -7,14 +7,14 @@ const URLSchema= new mongoose.Schema({
      urlCode:{
         type:String,
         require:true,
-        unique:true,
+      //   unique:true,
         lowercase:true,
         trim:true
      },
      longUrl:{
         type:String,
         require:true,
-        unique:true,
+      //   unique:true,
         lowercase:true,
         trim:true
 
@@ -22,7 +22,7 @@ const URLSchema= new mongoose.Schema({
      shortUrl:{
         type:String,
         require:true,
-        unique:true,
+      //   unique:true,
         lowercase:true,
         trim:true
      }
