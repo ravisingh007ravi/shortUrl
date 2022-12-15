@@ -32,9 +32,17 @@ const shortUrl = async (req, res) => {
 
     if (!longUrl) return res.status(400).send({ status: false, message: "longUrl must be present" })
 
-    if (!(Validations.isValidString(longUrl))) return res.status(400).send({ status: false, message: "provide a valid String" })
+    if (!(Validations.isValidString(longUrl))) return res.status(400).send({ status: false, message: "Pls provide a URL" })
+    
+    let cahcedProfileData = await GET_ASYNC(longUrl.trim())
 
-    let urlfound = false;
+    let data1 = JSON.parse(cahcedProfileData)
+
+    if (data1 != null) return res.status(200).send({ status: true, message: "url is already shorted", data: data1 })
+    
+    else {
+
+      let urlfound = false;
     let url = { method: 'get', url: longUrl };
 
     await axios(url)
@@ -45,14 +53,6 @@ const shortUrl = async (req, res) => {
       .catch((err) => { });
 
     if (urlfound == false) return res.status(400).send({ msg: "URL is not correct" })
-
-    let cahcedProfileData = await GET_ASYNC(longUrl)
-
-    let data1 = JSON.parse(cahcedProfileData)
-
-    if (data1 != null) return res.status(200).send({ status: true, message: "url is already shorted", data: data1 })
-    
-    else {
       
       let urlCode = shortid.generate(longUrl);
 
@@ -82,23 +82,18 @@ const activeShorturl = async (req, res) => {
 
     if (!Validations.isValidString(urlCode)) return res.status(400).send({ status: false, message: "provide a valid String" })
 
-
-
     if (!(Validations.isValidURLCode(urlCode))) return res.status(400).send({ status: false, message: "urlcode is not valid" })
     
-
-
     let cahcedProfileData = await GET_ASYNC(urlCode)
 
     if (cahcedProfileData != null) {
       let data = JSON.parse(cahcedProfileData)
       let longUrl = data.longUrl
 
-
-      return res.status(302).redirect(longUrl)
-
-
-    } else {
+    return res.status(302).redirect(longUrl)
+    }
+     else 
+     {
       let profile = await urlModel.findOne({ urlCode: urlCode });
       if (profile == null) {
         return res.status(404).send({ status: false, message: "urlcode is not registered" })
