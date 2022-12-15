@@ -8,14 +8,14 @@ const URLSchema= new mongoose.Schema({
         type:String,
         require:true,
         unique:true,
-        //lowercase:true,
+        lowercase:true,
         trim:true
      },
      longUrl:{
         type:String,
         require:true,
         unique:true,
-        //lowercase:true,
+        lowercase:true,
         trim:true
 
      },
@@ -23,7 +23,7 @@ const URLSchema= new mongoose.Schema({
         type:String,
         require:true,
         unique:true,
-        //lowercase:true,
+        lowercase:true,
         trim:true
      }
 },{timestamps:true});
