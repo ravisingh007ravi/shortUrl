@@ -29,8 +29,9 @@ const shortUrl = async (req, res) => {
   try {
     const longUrl = req.body.longUrl
     const data = req.body
-    longUrl.trim()
     if (!longUrl) return res.status(400).send({ status: false, message: "longUrl must be present" })
+
+    longUrl.trim()
 
     if (!(Validations.isValidString(longUrl))) return res.status(400).send({ status: false, message: "Pls provide a URL" })
     
@@ -38,11 +39,11 @@ const shortUrl = async (req, res) => {
 
     let data1 = JSON.parse(cahcedProfileData)
 
-    if (data1) return res.status(200).send({ status: true, message: "url is already shorted", data: data1 })
+    if (data1) return res.status(201).send({ status: true, message: "url is already shorted", data: data1 })
     
     else {
 
-      let urlfound = false;
+    let urlfound = false;
     let url = { method: 'get', url: longUrl };
 
     await axios(url)
@@ -56,17 +57,20 @@ const shortUrl = async (req, res) => {
       
       let urlCode = shortid.generate(longUrl);
 
-      let shortUrl = `http://localhost:3000/${urlCode}`
-
       data.shortUrl = `http://localhost:3000/${urlCode}`
       data.urlCode = urlCode
 
       const createURL = await urlModel.create(data);
 
-      let profile = await urlModel.findOne({ longUrl: longUrl });
-      await SET_ASYNC(longUrl,1440, JSON.stringify(profile))
+      let urlData = {
+        longUrl: createURL.longUrl,
+        shortUrl:createURL.shortUrl,
+        urlCode:createURL.urlCode
+      }
 
-      return res.status(201).send({ status: true, data: profile });
+      await SET_ASYNC(longUrl,1440, JSON.stringify(urlData))
+
+      return res.status(201).send({ status: true, data: urlData });
     }
   }
   catch (error) {return res.status(500).send({ msg: error.message })}
@@ -101,10 +105,7 @@ const activeShorturl = async (req, res) => {
 
     }
   }
-  catch (error) {
-    return res.status(500).send({ msg: error.message })
-  }
+  catch (error) {return res.status(500).send({ msg: error.message })}
 }
-
 
 module.exports = { shortUrl, activeShorturl }
