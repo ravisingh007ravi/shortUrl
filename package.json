@@ -1,0 +1,31 @@
+{
+  "name": "assignment",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "npx nodemon src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Jyotibissoyi/assignment.git"
+  },
+  "author": "Ravi Singh, Shreya Singh, Ali, Jyuti",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Jyotibissoyi/assignment/issues"
+  },
+  "homepage": "https://github.com/Jyotibissoyi/assignment#readme",
+  "dependencies": {
+    "axios": "^1.2.1",
+    "express": "^4.18.2",
+    "mongoose": "^6.8.0",
+    "node-url-shortener": "^2.0.3",
+    "nodemon": "^2.0.20",
+    "redis": "^3.1.2",
+    "shortid": "^2.2.16",
+    "util": "^0.12.5",
+    "valid-url": "^1.0.9"
+  }
+}
